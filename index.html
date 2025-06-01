@@ -5,501 +5,390 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Портфолио проектов</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --tg-theme-bg-color: #f5f6f8;
-            --tg-theme-text-color: #000000;
-            --tg-theme-hint-color: #999999;
-            --tg-theme-link-color: #3878ff;
-            --tg-theme-button-color: #3878ff;
-            --tg-theme-button-text-color: #ffffff;
-            
-            /* Кастомные цвета */
-            --card-bg: #ffffff;
-            --shadow-color: rgba(0, 0, 0, 0.08);
-            --primary-color: #3878ff;
-            --accent-color: #ff6b6b;
-            --border-radius: 16px;
-            --transition-speed: 0.3s;
-        }
+ <!-- Замените <head> секцию стилей со старой плиткой на следующий код -->
+<meta name="theme-color" content="#3878ff">
+<style>
+    /* Добавьте эти новые стили в вашу <head> секцию */
+    :root {
+        --tg-theme-bg-color: #f5f6f8;
+        --tg-theme-text-color: #000000;
+        --tg-theme-hint-color: #999999;
+        --tg-theme-link-color: #3878ff;
+        --tg-theme-button-color: #3878ff;
+        --tg-theme-button-text-color: #ffffff;
+        
+        /* Обновленные кастомные цвета для хайтек 2025 */
+        --card-bg: #ffffff;
+        --shadow-color: rgba(0, 0, 0, 0.08);
+        --primary-color: #3878ff;
+        --accent-color: #ff6b6b;
+        --neon-color: #00f7ff;
+        --gradient-1: linear-gradient(135deg, #6e8efb, #a777e3);
+        --gradient-2: linear-gradient(135deg, #3878ff, #00f7ff);
+        --gradient-3: linear-gradient(135deg, #ff6b6b, #ffb347);
+        --border-radius: 16px;
+        --transition-speed: 0.3s;
+        --glass-bg: rgba(255, 255, 255, 0.2);
+        --glass-border: rgba(255, 255, 255, 0.3);
+        --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        }
+    /* Обновленный контейнер плитки */
+    .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+        gap: 25px;
+        position: relative;
+        perspective: 1000px; /* Для 3D-эффектов */
+        transform-style: preserve-3d;
+    }
 
-        body {
-            background-color: var(--tg-theme-bg-color, var(--card-bg));
-            color: var(--tg-theme-text-color, #000000);
-            padding: 15px;
-            overflow-x: hidden;
-            transition: all 0.3s ease;
-        }
+    /* Новый стиль карточки в стиле 2025 */
+    .portfolio-item {
+        position: relative;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        transform: translateY(40px) rotateX(5deg);
+        transform-style: preserve-3d;
+        opacity: 0;
+        transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+                    opacity 0.6s ease,
+                    box-shadow 0.3s ease;
+        box-shadow: var(--glass-shadow);
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        height: 100%;
+    }
 
-        /* Заголовок и фильтры */
-        .portfolio-header {
-            margin-bottom: 25px;
-        }
+    /* Активная карточка */
+    .portfolio-item.visible {
+        transform: translateY(0) rotateX(0);
+        opacity: 1;
+        box-shadow: 0 15px 35px rgba(56, 120, 255, 0.2), 
+                    0 5px 15px rgba(0, 0, 0, 0.1);
+    }
 
-        .portfolio-header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            position: relative;
-            display: inline-block;
-        }
+    /* Эффект при наведении */
+    .portfolio-item:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(56, 120, 255, 0.25),
+                    0 10px 20px rgba(0, 0, 0, 0.15),
+                    0 0 15px var(--primary-color);
+        z-index: 10;
+    }
 
-        .portfolio-header h1::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
-            border-radius: 2px;
-        }
+    /* Эффект при активации */
+    .portfolio-item:active {
+        transform: scale(0.98) translateY(0);
+    }
 
-        .filter-container {
-            margin: 20px 0;
-            display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 10px;
-            gap: 8px;
-        }
+    /* Контейнер изображения */
+    .item-image {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 75%;
+        overflow: hidden;
+    }
 
-        .filter-container::-webkit-scrollbar {
-            height: 3px;
-        }
+    .item-image img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        transform-origin: center;
+    }
 
-        .filter-container::-webkit-scrollbar-thumb {
-            background-color: var(--tg-theme-hint-color);
-            border-radius: 10px;
-        }
+    /* Усиленный эффект при наведении */
+    .portfolio-item:hover .item-image img {
+        transform: scale(1.1) translateY(-5px);
+    }
 
-        .filter-btn {
-            padding: 8px 16px;
-            border: none;
-            outline: none;
-            background-color: rgba(0, 0, 0, 0.05);
-            color: var(--tg-theme-hint-color);
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.3s ease;
-        }
+    /* Новый стиль наложения */
+    .item-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.8) 0%,
+            rgba(0, 0, 0, 0.3) 60%,
+            rgba(0, 0, 0, 0.1) 80%
+        );
+        opacity: 0.4;
+        transition: opacity 0.3s ease;
+    }
 
-        .filter-btn.active {
-            background-color: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
-            box-shadow: 0 4px 10px rgba(56, 120, 255, 0.25);
-        }
+    .portfolio-item:hover .item-overlay {
+        opacity: 0.7;
+    }
 
-        /* Контейнер плитки */
+    /* Добавляем блики на карточку */
+    .item-glare {
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+            circle at center,
+            rgba(255, 255, 255, 0.8) 0%,
+            rgba(255, 255, 255, 0) 70%
+        );
+        opacity: 0;
+        mix-blend-mode: overlay;
+        transform: translateY(-20%) rotate(45deg);
+        pointer-events: none;
+        transition: opacity 0.6s ease, transform 0.6s ease;
+        z-index: 3;
+    }
+
+    .portfolio-item:hover .item-glare {
+        opacity: 0.1;
+        transform: translateY(20%) rotate(45deg);
+    }
+
+    /* Неоновая рамка вокруг карточки */
+    .portfolio-item::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: var(--border-radius);
+        padding: 2px;
+        background: var(--gradient-2);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, 
+                      linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box,
+              linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.6s;
+        z-index: 2;
+    }
+
+    .portfolio-item:hover::after {
+        opacity: 1;
+    }
+
+    /* Содержимое карточки */
+    .item-content {
+        padding: 20px;
+        position: relative;
+        z-index: 4;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        background: rgba(255,255,255,0.1);
+    }
+
+    /* Заголовок */
+    .item-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--tg-theme-text-color);
+        position: relative;
+        transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        background: var(--gradient-1);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        text-shadow: 0 2px 10px rgba(56, 120, 255, 0.3);
+    }
+
+    .portfolio-item:hover .item-title {
+        transform: translateY(-5px);
+    }
+
+    /* Описание */
+    .item-description {
+        font-size: 14px;
+        color: var(--tg-theme-hint-color);
+        line-height: 1.6;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        transition: transform 0.4s 0.1s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .portfolio-item:hover .item-description {
+        transform: translateY(-5px);
+    }
+
+    /* Значок "посмотреть подробнее" */
+    .view-more {
+        position: absolute;
+        bottom: 10px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--gradient-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: scale(0);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 12px rgba(56, 120, 255, 0.3);
+        z-index: 5;
+    }
+
+    .view-more svg {
+        width: 18px;
+        height: 18px;
+        fill: white;
+    }
+
+    .portfolio-item:hover .view-more {
+        transform: scale(1);
+    }
+
+    /* 3D подсветка краев */
+    .portfolio-item::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: var(--primary-color);
+        box-shadow: 0 0 30px var(--primary-color);
+        transform: translateZ(-10px);
+        opacity: 0;
+        transition: opacity 0.6s;
+        border-radius: var(--border-radius);
+    }
+
+    .portfolio-item:hover::before {
+        opacity: 0.3;
+    }
+
+    /* Ребрендинг иконки загрузки */
+    .loader {
+        border: 4px solid rgba(56, 120, 255, 0.1);
+        border-radius: 50%;
+        border-top: 4px solid transparent;
+        background: linear-gradient(white, white) padding-box,
+                    var(--gradient-2) border-box;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+    }
+
+    /* Адаптивность */
+    @media (min-width: 480px) {
         .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-            gap: 15px;
-            position: relative;
+            grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
         }
+    }
 
-        /* Карточки проектов */
-        .portfolio-item {
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: 0 4px 15px var(--shadow-color);
-            position: relative;
-            transform: translateY(40px);
-            opacity: 0;
-            transition: transform var(--transition-speed) cubic-bezier(0.34, 1.56, 0.64, 1), 
-                        opacity var(--transition-speed) ease,
-                        box-shadow var(--transition-speed) ease;
+    @media (min-width: 768px) {
+        .portfolio-grid {
+            grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
         }
+    }
+    /* Футуристический фон */
+.futuristic-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
 
-        .portfolio-item.visible {
-            transform: translateY(0);
-            opacity: 1;
-        }
+.grid-lines {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background-image: 
+        linear-gradient(to right, rgba(56, 120, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(56, 120, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transform: perspective(500px) rotateX(60deg);
+    animation: grid-move 30s linear infinite;
+}
 
-        .portfolio-item:active {
-            transform: scale(0.98);
-        }
+.floating-dots {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
 
-        .item-image {
-            position: relative;
-            width: 100%;
-            height: 0;
-            padding-bottom: 75%;
-            overflow: hidden;
-        }
+.floating-dots::before,
+.floating-dots::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle, var(--primary-color) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.3;
+    animation: dots-float 30s linear infinite;
+}
 
-        .item-image img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s ease;
-        }
+.floating-dots::after {
+    background-size: 70px 70px;
+    animation-duration: 40s;
+    animation-delay: 5s;
+    opacity: 0.2;
+}
 
-        .portfolio-item:hover .item-image img {
-            transform: scale(1.05);
-        }
+.glow-effect {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 10%, rgba(56, 120, 255, 0.15), transparent 70%);
+    mix-blend-mode: screen;
+}
 
-        .item-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to top,
-                rgba(0, 0, 0, 0.7) 0%,
-                rgba(0, 0, 0, 0.3) 30%,
-                rgba(0, 0, 0, 0.1) 60%,
-                rgba(0, 0, 0, 0) 100%
-            );
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
-        }
+@keyframes grid-move {
+    0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+    100% { transform: perspective(500px) rotateX(60deg) translateY(40px); }
+}
 
-        .item-content {
-            padding: 15px;
-        }
+@keyframes dots-float {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+}
 
-        .item-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--tg-theme-text-color);
-            position: relative;
-            transition: transform 0.3s ease;
-        }
+/* Реактивный заголовок */
+.reactive-title {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    position: relative;
+    display: inline-block;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--neon-color));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: text-shine 3s linear infinite;
+}
 
-        .item-description {
-            font-size: 14px;
-            color: var(--tg-theme-hint-color);
-            line-height: 1.5;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
+.portfolio-subtitle {
+    font-size: 16px;
+    color: var(--tg-theme-hint-color);
+    margin-bottom: 25px;
+    opacity: 0.8;
+}
 
-        /* Индикатор загрузки */
-        .loader-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--tg-theme-bg-color);
-            z-index: 1000;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        .loader {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(56, 120, 255, 0.2);
-            border-radius: 50%;
-            border-top-color: var(--primary-color);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        /* Анимации */
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeUp {
-            from { 
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Модальное окно */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            position: relative;
-            width: 90%;
-            max-height: 90%;
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            transform: scale(0.9);
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .modal.active .modal-content {
-            transform: scale(1);
-            opacity: 1;
-        }
-
-        .modal-image {
-            width: 100%;
-            max-height: 50vh;
-            object-fit: cover;
-        }
-
-        .modal-details {
-            padding: 20px;
-        }
-
-        .modal-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--tg-theme-text-color);
-        }
-
-        .modal-description {
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--tg-theme-hint-color);
-            margin-bottom: 15px;
-        }
-
-        .modal-gallery {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 15px;
-        }
-
-        .gallery-thumbnail {
-            width: 100%;
-            height: 0;
-            padding-bottom: 100%;
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-        }
-
-        .gallery-thumbnail img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-thumbnail:hover img {
-            transform: scale(1.1);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 30px;
-            height: 30px;
-            background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .modal-close:before, .modal-close:after {
-            content: '';
-            position: absolute;
-            width: 15px;
-            height: 2px;
-            background-color: #fff;
-        }
-
-        .modal-close:before {
-            transform: rotate(45deg);
-        }
-
-        .modal-close:after {
-            transform: rotate(-45deg);
-        }
-
-        /* Подсказки */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--tg-theme-hint-color);
-        }
-
-        .empty-state p {
-            margin-top: 10px;
-            font-size: 16px;
-        }
-
-        /* Эффекты для "вау" */
-        .floating-shapes {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            opacity: 0.1;
-            animation: float 15s infinite ease-in-out;
-        }
-
-        .shape:nth-child(1) {
-            width: 100px;
-            height: 100px;
-            top: 10%;
-            left: -50px;
-        }
-
-        .shape:nth-child(2) {
-            width: 80px;
-            height: 80px;
-            top: 60%;
-            right: -40px;
-            animation-delay: 5s;
-        }
-
-        .shape:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            top: 40%;
-            left: 70%;
-            animation-delay: 8s;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0) translateX(0);
-            }
-            50% {
-                transform: translateY(-30px) translateX(20px);
-            }
-        }
-
-        /* Медиа запросы для адаптивности */
-        @media (min-width: 480px) {
-            .portfolio-grid {
-                grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
-            }
-        }
-
-        @media (min-width: 768px) {
-            .portfolio-grid {
-                grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
-            }
-        }
-
-        /* Анимация для карточек с задержкой */
-        .portfolio-item:nth-child(1) { animation-delay: 0.1s; }
-        .portfolio-item:nth-child(2) { animation-delay: 0.2s; }
-        .portfolio-item:nth-child(3) { animation-delay: 0.3s; }
-        .portfolio-item:nth-child(4) { animation-delay: 0.4s; }
-        .portfolio-item:nth-child(5) { animation-delay: 0.5s; }
-        .portfolio-item:nth-child(6) { animation-delay: 0.6s; }
-
-        /* Анимация раскрытия карточек */
-        .portfolio-item::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: var(--primary-color);
-            top: 0;
-            left: 0;
-            transform: scaleX(1);
-            transform-origin: right;
-            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            z-index: 3;
-        }
-
-        .portfolio-item.visible::before {
-            transform: scaleX(0);
-        }
-
-        /* Пульсирующая кнопка */
-        .floating-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(56, 120, 255, 0.3);
-            cursor: pointer;
-            z-index: 10;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(56, 120, 255, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 15px rgba(56, 120, 255, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(56, 120, 255, 0);
-            }
-        }
-
-        .floating-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: #fff;
-        }
-    </style>
+@keyframes text-shine {
+    to { background-position: 200% center; }
+}
+</style>
 </head>
 <body>
     <!-- Индикатор загрузки -->
@@ -508,11 +397,11 @@
     </div>
 
     <!-- Плавающие фоновые фигуры для "вау" эффекта -->
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
+<div class="futuristic-background">
+    <div class="grid-lines"></div>
+    <div class="floating-dots"></div>
+    <div class="glow-effect"></div>
+</div>
 
     <!-- Заголовок и фильтры -->
     <div class="portfolio-header">
@@ -635,46 +524,99 @@
             });
         }
 
-        // Создание карточки проекта
-        function createProjectCard(project, index) {
-            const card = document.createElement('div');
-            card.className = 'portfolio-item';
-            card.dataset.index = index;
-            card.dataset.id = project.id || index;
-            
-            // Добавьте классы для фильтрации, если есть industry или tags
-            if (project.industry) {
-                project.industry.forEach(ind => {
-                    card.dataset.industry = (card.dataset.industry || '') + ' ' + ind.toLowerCase();
-                });
-            }
-            
-            if (project.tags) {
-                project.tags.forEach(tag => {
-                    card.dataset.tags = (card.dataset.tags || '') + ' ' + tag.toLowerCase();
-                });
-            }
-            
-            // Содержимое карточки
-            card.innerHTML = `
-                <div class="item-image">
-                    <img src="${project.url || (project.images && project.images.length > 0 ? project.images[0] : '')}" 
-                         alt="${project.title || 'Проект'}">
-                    <div class="item-overlay"></div>
-                </div>
-                <div class="item-content">
-                    <h3 class="item-title">${project.title || 'Без названия'}</h3>
-                    <p class="item-description">${project.description || ''}</p>
-                </div>
-            `;
-            
-            // Обработчик клика для открытия модального окна
-            card.addEventListener('click', () => {
-                openProjectModal(project);
+// Функция создания карточки проекта
+function createProjectCard(project, index) {
+    const card = document.createElement('div');
+    card.className = 'portfolio-item';
+    card.dataset.index = index;
+    card.dataset.id = project.id || index;
+    
+    // Определяем изображение для карточки
+    let imageUrl = '';
+    if (project.images && project.images.length > 0) {
+        // Используем первое изображение из массива изображений
+        imageUrl = project.images[0];
+    } else if (project.url) {
+        // Используем URL только если нет изображений
+        imageUrl = project.url;
+    }
+    
+    // Добавляем классы для фильтрации
+    if (project.industry) {
+        if (Array.isArray(project.industry)) {
+            project.industry.forEach(ind => {
+                card.dataset.industry = (card.dataset.industry || '') + ' ' + ind.toLowerCase();
             });
-            
-            return card;
+        } else {
+            card.dataset.industry = project.industry.toLowerCase();
         }
+    }
+    
+    if (project.tags) {
+        if (Array.isArray(project.tags)) {
+            project.tags.forEach(tag => {
+                card.dataset.tags = (card.dataset.tags || '') + ' ' + tag.toLowerCase();
+            });
+        } else {
+            card.dataset.tags = project.tags.toLowerCase();
+        }
+    }
+    
+    // Извлекаем правильное описание
+    let description = '';
+    if (project.meta_description) {
+        description = project.meta_description;
+    } else if (project.description) {
+        description = project.description;
+    } else if (project.project_info && project.project_info[4]) {
+        // Добываем описание из массива project_info (судя по примеру JSON)
+        description = project.project_info[4];
+    }
+    
+    // Улучшенное содержимое карточки с вау-эффектом
+    card.innerHTML = `
+        <div class="item-image">
+            <img src="${imageUrl}" alt="${project.title || 'Проект'}">
+            <div class="item-overlay"></div>
+            <div class="item-glare"></div>
+        </div>
+        <div class="item-content">
+            <h3 class="item-title">${project.title || 'Без названия'}</h3>
+            <p class="item-description">${description || ''}</p>
+            <div class="view-more">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+                </svg>
+            </div>
+        </div>
+    `;
+    
+    // Добавляем анимацию движения карточки при движении мышью
+    card.addEventListener('mousemove', (e) => {
+        const { left, top, width, height } = card.getBoundingClientRect();
+        const x = (e.clientX - left) / width - 0.5;
+        const y = (e.clientY - top) / height - 0.5;
+        
+        card.style.transform = `
+            perspective(1000px) 
+            rotateY(${x * 10}deg) 
+            rotateX(${y * -10}deg) 
+            translateZ(10px)
+        `;
+    });
+    
+    // Возврат карточки в исходное положение при уходе мыши
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+    });
+    
+    // Обработчик клика для открытия модального окна
+    card.addEventListener('click', () => {
+        openProjectModal(project);
+    });
+    
+    return card;
+}
 
         // Создание фильтров на основе данных
         function createFilters(data) {
