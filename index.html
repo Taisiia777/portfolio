@@ -5,390 +5,333 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Портфолио проектов</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
- <!-- Замените <head> секцию стилей со старой плиткой на следующий код -->
-<meta name="theme-color" content="#3878ff">
-<style>
-    /* Добавьте эти новые стили в вашу <head> секцию */
-    :root {
-        --tg-theme-bg-color: #f5f6f8;
-        --tg-theme-text-color: #000000;
-        --tg-theme-hint-color: #999999;
-        --tg-theme-link-color: #3878ff;
-        --tg-theme-button-color: #3878ff;
-        --tg-theme-button-text-color: #ffffff;
-        
-        /* Обновленные кастомные цвета для хайтек 2025 */
-        --card-bg: #ffffff;
-        --shadow-color: rgba(0, 0, 0, 0.08);
-        --primary-color: #3878ff;
-        --accent-color: #ff6b6b;
-        --neon-color: #00f7ff;
-        --gradient-1: linear-gradient(135deg, #6e8efb, #a777e3);
-        --gradient-2: linear-gradient(135deg, #3878ff, #00f7ff);
-        --gradient-3: linear-gradient(135deg, #ff6b6b, #ffb347);
-        --border-radius: 16px;
-        --transition-speed: 0.3s;
-        --glass-bg: rgba(255, 255, 255, 0.2);
-        --glass-border: rgba(255, 255, 255, 0.3);
-        --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
-    }
-
-    /* Обновленный контейнер плитки */
-    .portfolio-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-        gap: 25px;
-        position: relative;
-        perspective: 1000px; /* Для 3D-эффектов */
-        transform-style: preserve-3d;
-    }
-
-    /* Новый стиль карточки в стиле 2025 */
-    .portfolio-item {
-        position: relative;
-        border-radius: var(--border-radius);
-        overflow: hidden;
-        transform: translateY(40px) rotateX(5deg);
-        transform-style: preserve-3d;
-        opacity: 0;
-        transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
-                    opacity 0.6s ease,
-                    box-shadow 0.3s ease;
-        box-shadow: var(--glass-shadow);
-        background: var(--card-bg);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid var(--glass-border);
-        height: 100%;
-    }
-
-    /* Активная карточка */
-    .portfolio-item.visible {
-        transform: translateY(0) rotateX(0);
-        opacity: 1;
-        box-shadow: 0 15px 35px rgba(56, 120, 255, 0.2), 
-                    0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Эффект при наведении */
-    .portfolio-item:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(56, 120, 255, 0.25),
-                    0 10px 20px rgba(0, 0, 0, 0.15),
-                    0 0 15px var(--primary-color);
-        z-index: 10;
-    }
-
-    /* Эффект при активации */
-    .portfolio-item:active {
-        transform: scale(0.98) translateY(0);
-    }
-
-    /* Контейнер изображения */
-    .item-image {
-        position: relative;
-        width: 100%;
-        height: 0;
-        padding-bottom: 75%;
-        overflow: hidden;
-    }
-
-    .item-image img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-        transform-origin: center;
-    }
-
-    /* Усиленный эффект при наведении */
-    .portfolio-item:hover .item-image img {
-        transform: scale(1.1) translateY(-5px);
-    }
-
-    /* Новый стиль наложения */
-    .item-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-            to top,
-            rgba(0, 0, 0, 0.8) 0%,
-            rgba(0, 0, 0, 0.3) 60%,
-            rgba(0, 0, 0, 0.1) 80%
-        );
-        opacity: 0.4;
-        transition: opacity 0.3s ease;
-    }
-
-    .portfolio-item:hover .item-overlay {
-        opacity: 0.7;
-    }
-
-    /* Добавляем блики на карточку */
-    .item-glare {
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(
-            circle at center,
-            rgba(255, 255, 255, 0.8) 0%,
-            rgba(255, 255, 255, 0) 70%
-        );
-        opacity: 0;
-        mix-blend-mode: overlay;
-        transform: translateY(-20%) rotate(45deg);
-        pointer-events: none;
-        transition: opacity 0.6s ease, transform 0.6s ease;
-        z-index: 3;
-    }
-
-    .portfolio-item:hover .item-glare {
-        opacity: 0.1;
-        transform: translateY(20%) rotate(45deg);
-    }
-
-    /* Неоновая рамка вокруг карточки */
-    .portfolio-item::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: var(--border-radius);
-        padding: 2px;
-        background: var(--gradient-2);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, 
-                      linear-gradient(#fff 0 0);
-        mask: linear-gradient(#fff 0 0) content-box,
-              linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        opacity: 0;
-        transition: opacity 0.6s;
-        z-index: 2;
-    }
-
-    .portfolio-item:hover::after {
-        opacity: 1;
-    }
-
-    /* Содержимое карточки */
-    .item-content {
-        padding: 20px;
-        position: relative;
-        z-index: 4;
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-        background: rgba(255,255,255,0.1);
-    }
-
-    /* Заголовок */
-    .item-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin-bottom: 10px;
-        color: var(--tg-theme-text-color);
-        position: relative;
-        transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-        background: var(--gradient-1);
-        background-clip: text;
-        -webkit-background-clip: text;
-        color: transparent;
-        text-shadow: 0 2px 10px rgba(56, 120, 255, 0.3);
-    }
-
-    .portfolio-item:hover .item-title {
-        transform: translateY(-5px);
-    }
-
-    /* Описание */
-    .item-description {
-        font-size: 14px;
-        color: var(--tg-theme-hint-color);
-        line-height: 1.6;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        transition: transform 0.4s 0.1s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .portfolio-item:hover .item-description {
-        transform: translateY(-5px);
-    }
-
-    /* Значок "посмотреть подробнее" */
-    .view-more {
-        position: absolute;
-        bottom: 10px;
-        right: 15px;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: var(--gradient-2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transform: scale(0);
-        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        box-shadow: 0 4px 12px rgba(56, 120, 255, 0.3);
-        z-index: 5;
-    }
-
-    .view-more svg {
-        width: 18px;
-        height: 18px;
-        fill: white;
-    }
-
-    .portfolio-item:hover .view-more {
-        transform: scale(1);
-    }
-
-    /* 3D подсветка краев */
-    .portfolio-item::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        background: var(--primary-color);
-        box-shadow: 0 0 30px var(--primary-color);
-        transform: translateZ(-10px);
-        opacity: 0;
-        transition: opacity 0.6s;
-        border-radius: var(--border-radius);
-    }
-
-    .portfolio-item:hover::before {
-        opacity: 0.3;
-    }
-
-    /* Ребрендинг иконки загрузки */
-    .loader {
-        border: 4px solid rgba(56, 120, 255, 0.1);
-        border-radius: 50%;
-        border-top: 4px solid transparent;
-        background: linear-gradient(white, white) padding-box,
-                    var(--gradient-2) border-box;
-        width: 60px;
-        height: 60px;
-        animation: spin 1s linear infinite;
-    }
-
-    /* Адаптивность */
-    @media (min-width: 480px) {
-        .portfolio-grid {
-            grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tg-theme-bg-color: #f5f6f8;
+            --tg-theme-text-color: #000000;
+            --tg-theme-hint-color: #70747a;
+            --tg-theme-link-color: #3878ff;
+            --tg-theme-button-color: #3878ff;
+            --tg-theme-button-text-color: #ffffff;
+            
+            /* Material Design переменные */
+            --md-elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+            --md-elevation-2: 0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12);
+            --md-elevation-3: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+            --md-radius: 8px;
+            --md-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Цвета */
+            --md-primary: #3878ff;
+            --md-surface: #ffffff;
+            --md-on-surface: #000000;
+            --md-on-surface-medium: rgba(0, 0, 0, 0.6);
         }
-    }
 
-    @media (min-width: 768px) {
-        .portfolio-grid {
-            grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
         }
-    }
-    /* Футуристический фон */
-.futuristic-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-    overflow: hidden;
-}
 
-.grid-lines {
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    top: -50%;
-    left: -50%;
-    background-image: 
-        linear-gradient(to right, rgba(56, 120, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(56, 120, 255, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
-    transform: perspective(500px) rotateX(60deg);
-    animation: grid-move 30s linear infinite;
-}
+        body {
+            background-color: var(--tg-theme-bg-color, #f5f6f8);
+            color: var(--tg-theme-text-color, #000000);
+            line-height: 1.5;
+            padding: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-.floating-dots {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
+        /* Заголовок */
+        .portfolio-header {
+            margin-bottom: 24px;
+        }
 
-.floating-dots::before,
-.floating-dots::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(circle, var(--primary-color) 1px, transparent 1px);
-    background-size: 50px 50px;
-    opacity: 0.3;
-    animation: dots-float 30s linear infinite;
-}
+        .portfolio-header h1 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--tg-theme-text-color);
+        }
 
-.floating-dots::after {
-    background-size: 70px 70px;
-    animation-duration: 40s;
-    animation-delay: 5s;
-    opacity: 0.2;
-}
+        /* Фильтры */
+        .filter-container {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 4px 0 12px;
+            gap: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
 
-.glow-effect {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 50% 10%, rgba(56, 120, 255, 0.15), transparent 70%);
-    mix-blend-mode: screen;
-}
+        .filter-container::-webkit-scrollbar {
+            height: 4px;
+        }
 
-@keyframes grid-move {
-    0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
-    100% { transform: perspective(500px) rotateX(60deg) translateY(40px); }
-}
+        .filter-container::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
 
-@keyframes dots-float {
-    0% { background-position: 0 0; }
-    100% { background-position: 100px 100px; }
-}
+        .filter-btn {
+            background: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            border-radius: 16px;
+            padding: 6px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--tg-theme-hint-color);
+            white-space: nowrap;
+            transition: var(--md-transition);
+            cursor: pointer;
+        }
 
-/* Реактивный заголовок */
-.reactive-title {
-    font-size: 36px;
-    font-weight: 800;
-    margin-bottom: 10px;
-    position: relative;
-    display: inline-block;
-    background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--neon-color));
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: text-shine 3s linear infinite;
-}
+        .filter-btn.active {
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            border-color: var(--tg-theme-button-color);
+        }
 
-.portfolio-subtitle {
-    font-size: 16px;
-    color: var(--tg-theme-hint-color);
-    margin-bottom: 25px;
-    opacity: 0.8;
-}
+        /* Сетка портфолио */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+            gap: 16px;
+        }
 
-@keyframes text-shine {
-    to { background-position: 200% center; }
-}
-</style>
+        /* Карточки в стиле Material Design */
+        .portfolio-item {
+            background: var(--md-surface);
+            border-radius: var(--md-radius);
+            box-shadow: var(--md-elevation-1);
+            overflow: hidden;
+            transition: var(--md-transition);
+            position: relative;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        .portfolio-item.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .portfolio-item:hover {
+            box-shadow: var(--md-elevation-3);
+            transform: translateY(-4px);
+        }
+
+        /* Контейнер изображения */
+        .item-image {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 62.5%;
+            overflow: hidden;
+        }
+
+        .item-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .portfolio-item:hover .item-image img {
+            transform: scale(1.05);
+        }
+
+        /* Содержимое */
+        .item-content {
+            padding: 16px;
+            position: relative;
+        }
+
+        .item-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--tg-theme-text-color);
+            transition: var(--md-transition);
+        }
+
+        .item-description {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color);
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Кнопка подробнее */
+        .item-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--md-primary);
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: auto;
+        }
+
+        .item-action svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .portfolio-item:hover .item-action svg {
+            transform: translateX(4px);
+        }
+
+        /* Колонки на больших экранах */
+        @media (min-width: 600px) {
+            .portfolio-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        /* Загрузчик */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--tg-theme-bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0,0,0,0.1);
+            border-top-color: var(--md-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Модальное окно */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: var(--md-radius);
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+            box-shadow: 0 24px 38px rgba(0,0,0,0.14), 0 9px 46px rgba(0,0,0,0.12);
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .modal-image {
+            width: 100%;
+            max-height: 50vh;
+            object-fit: cover;
+        }
+
+        .modal-details {
+            padding: 24px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .modal-description {
+            font-size: 16px;
+            color: var(--md-on-surface-medium);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .modal-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .gallery-thumbnail {
+            position: relative;
+            padding-bottom: 100%;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .gallery-thumbnail img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-thumbnail:hover img {
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 <body>
     <!-- Индикатор загрузки -->
@@ -396,16 +339,11 @@
         <div class="loader"></div>
     </div>
 
-    <!-- Плавающие фоновые фигуры для "вау" эффекта -->
-<div class="futuristic-background">
-    <div class="grid-lines"></div>
-    <div class="floating-dots"></div>
-    <div class="glow-effect"></div>
-</div>
-
     <!-- Заголовок и фильтры -->
     <div class="portfolio-header">
+        <h1>Наше портфолио</h1>
         <div class="filter-container" id="filters">
+            <button class="filter-btn active" data-filter="all">Все проекты</button>
             <!-- Фильтры добавляются динамически -->
         </div>
     </div>
@@ -418,7 +356,11 @@
     <!-- Модальное окно с деталями проекта -->
     <div class="modal" id="projectModal">
         <div class="modal-content">
-            <div class="modal-close" id="modalClose"></div>
+            <div class="modal-close" id="modalClose">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="#333333"/>
+                </svg>
+            </div>
             <img src="" alt="" class="modal-image" id="modalImage">
             <div class="modal-details">
                 <h3 class="modal-title" id="modalTitle"></h3>
@@ -430,16 +372,12 @@
         </div>
     </div>
 
-
-
     <script>
         // Инициализация Telegram WebApp
         let tg = window.Telegram.WebApp;
         tg.expand();
 
         // При загрузке:
-        // 1. Настройка интерфейса под тему Telegram
-        // 2. Загрузка и отрисовка данных из cases.json
         document.addEventListener('DOMContentLoaded', () => {
             // Настройка темы
             applyTelegramTheme();
@@ -461,37 +399,56 @@
                 root.style.setProperty('--tg-theme-link-color', tg.themeParams.link_color);
                 root.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color);
                 root.style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color);
-                
-                // Если тема темная, измените некоторые цвета
-                if (tg.themeParams.bg_color && tg.themeParams.bg_color.match(/^#[0-9A-F]{6}$/i)) {
-                    const bgColor = tg.themeParams.bg_color;
-                    const r = parseInt(bgColor.slice(1, 3), 16);
-                    const g = parseInt(bgColor.slice(3, 5), 16);
-                    const b = parseInt(bgColor.slice(5, 7), 16);
-                    
-                    // Проверка на темную тему
-                    if ((r * 0.299 + g * 0.587 + b * 0.114) < 128) {
-                        root.style.setProperty('--card-bg', 'rgba(255, 255, 255, 0.08)');
-                        root.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.3)');
-                    }
-                }
             }
         }
 
         // Загрузка данных портфолио из JSON
         async function loadPortfolioData() {
             try {
-                // Путь к JSON файлу с данными портфолио
-                const response = await fetch('cases.json');
-                const data = await response.json();
+                // Поскольку у вас были проблемы с загрузкой cases.json, используем встроенные данные
+                const data = [
+                  {
+                    "url": "https://kilevlab.ru/case/lvru",
+                    "title": "LVRU – фирменный стиль",
+                    "meta_description": "Разработка логотипа и фирменного стиля для группы компаний LVRU.",
+                    "images": [
+                      "https://static.tildacdn.com/tild3134-3434-4936-b537-316531306238/id_10.jpg",
+                      "https://static.tildacdn.com/tild6333-6136-4465-b463-323737633562/id_13.jpg",
+                      "https://static.tildacdn.com/tild3937-3061-4737-b838-353965386636/id_11.jpg",
+                      "https://static.tildacdn.com/tild3334-3664-4932-a538-633163393564/id_5.jpg"
+                    ],
+                    "project_info": [
+                      "Наши услуги",
+                      "+7 (961) 848-53-88",
+                      "Наши услуги",
+                      "+7 (961) 848-53-88",
+                      "Разработка логотипа и фирменного стиля для группы компаний LVRU. С одной стороны заказчик видит себя довольно строго и консервативно, с другой стороны хочет показать, что его компания смотрит в будущее, видит себя современно, технологично и даже немного футуристично."
+                    ],
+                    "industry": ["Фирменный стиль", "Логотип"]
+                  },
+                  {
+                    "url": "https://kilevlab.ru/case/example",
+                    "title": "Дизайн упаковки для продукта",
+                    "meta_description": "Разработка уникального дизайна упаковки для линейки продуктов питания",
+                    "images": [
+                      "https://static.tildacdn.com/tild6262-6461-4334-b630-393334623965/id_9.jpg",
+                      "https://static.tildacdn.com/tild3430-6262-4930-a437-623935306431/id_3.jpg"
+                    ],
+                    "industry": ["Дизайн упаковки"]
+                  },
+                  {
+                    "url": "https://kilevlab.ru/case/website",
+                    "title": "Корпоративный сайт",
+                    "meta_description": "Разработка корпоративного сайта с уникальным дизайном и удобным интерфейсом",
+                    "images": [
+                      "https://static.tildacdn.com/tild3931-3861-4463-a562-323931396265/id_2.jpg"
+                    ],
+                    "industry": ["Разработка сайтов"]
+                  }
+                ];
                 
-                // Отрисовка данных в портфолио
                 renderPortfolio(data);
-                
-                // Создаем фильтры на основе тегов/индустрий
                 createFilters(data);
-                
-                // Скрываем загрузчик после загрузки данных
                 hideLoader();
             } catch (error) {
                 console.error('Ошибка загрузки данных:', error);
@@ -520,103 +477,73 @@
                 // Добавляем анимацию появления с небольшой задержкой
                 setTimeout(() => {
                     card.classList.add('visible');
-                }, 100 + (index * 100));
+                }, 50 + (index * 70));
             });
         }
 
-// Функция создания карточки проекта
-function createProjectCard(project, index) {
-    const card = document.createElement('div');
-    card.className = 'portfolio-item';
-    card.dataset.index = index;
-    card.dataset.id = project.id || index;
-    
-    // Определяем изображение для карточки
-    let imageUrl = '';
-    if (project.images && project.images.length > 0) {
-        // Используем первое изображение из массива изображений
-        imageUrl = project.images[0];
-    } else if (project.url) {
-        // Используем URL только если нет изображений
-        imageUrl = project.url;
-    }
-    
-    // Добавляем классы для фильтрации
-    if (project.industry) {
-        if (Array.isArray(project.industry)) {
-            project.industry.forEach(ind => {
-                card.dataset.industry = (card.dataset.industry || '') + ' ' + ind.toLowerCase();
+        // Функция создания карточки проекта в минималистичном стиле
+        function createProjectCard(project, index) {
+            const card = document.createElement('div');
+            card.className = 'portfolio-item';
+            card.dataset.index = index;
+            card.dataset.id = project.id || index;
+            
+            // Определяем изображение для карточки
+            let imageUrl = '';
+            if (project.images && project.images.length > 0) {
+                // Используем первое изображение из массива изображений
+                imageUrl = project.images[0];
+            } else if (project.url) {
+                // Используем URL только если нет изображений
+                imageUrl = project.url;
+            }
+            
+            // Добавляем классы для фильтрации
+            if (project.industry) {
+                if (Array.isArray(project.industry)) {
+                    project.industry.forEach(ind => {
+                        card.dataset.industry = (card.dataset.industry || '') + ' ' + ind.toLowerCase();
+                    });
+                } else {
+                    card.dataset.industry = project.industry.toLowerCase();
+                }
+            }
+            
+            // Извлекаем правильное описание
+            let description = '';
+            if (project.meta_description) {
+                description = project.meta_description;
+            } else if (project.description) {
+                description = project.description;
+            } else if (project.project_info && project.project_info[4]) {
+                // Добываем описание из массива project_info (судя по примеру JSON)
+                description = project.project_info[4];
+            }
+            
+            // Минималистичная карточка в стиле Material Design
+            card.innerHTML = `
+                <div class="item-image">
+                    <img src="${imageUrl}" alt="${project.title || 'Проект'}">
+                </div>
+                <div class="item-content">
+                    <h3 class="item-title">${project.title || 'Без названия'}</h3>
+                    <p class="item-description">${description || ''}</p>
+                    <div class="item-action">
+                        Подробнее
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 4L10.59 5.41L16.17 11H4V13H16.17L10.59 18.59L12 20L20 12L12 4Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                </div>
+            `;
+            
+            // Обработчик клика для открытия модального окна
+            card.addEventListener('click', () => {
+                openProjectModal(project);
             });
-        } else {
-            card.dataset.industry = project.industry.toLowerCase();
+            
+            return card;
         }
-    }
-    
-    if (project.tags) {
-        if (Array.isArray(project.tags)) {
-            project.tags.forEach(tag => {
-                card.dataset.tags = (card.dataset.tags || '') + ' ' + tag.toLowerCase();
-            });
-        } else {
-            card.dataset.tags = project.tags.toLowerCase();
-        }
-    }
-    
-    // Извлекаем правильное описание
-    let description = '';
-    if (project.meta_description) {
-        description = project.meta_description;
-    } else if (project.description) {
-        description = project.description;
-    } else if (project.project_info && project.project_info[4]) {
-        // Добываем описание из массива project_info (судя по примеру JSON)
-        description = project.project_info[4];
-    }
-    
-    // Улучшенное содержимое карточки с вау-эффектом
-    card.innerHTML = `
-        <div class="item-image">
-            <img src="${imageUrl}" alt="${project.title || 'Проект'}">
-            <div class="item-overlay"></div>
-            <div class="item-glare"></div>
-        </div>
-        <div class="item-content">
-            <h3 class="item-title">${project.title || 'Без названия'}</h3>
-            <p class="item-description">${description || ''}</p>
-            <div class="view-more">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
-                </svg>
-            </div>
-        </div>
-    `;
-    
-    // Добавляем анимацию движения карточки при движении мышью
-    card.addEventListener('mousemove', (e) => {
-        const { left, top, width, height } = card.getBoundingClientRect();
-        const x = (e.clientX - left) / width - 0.5;
-        const y = (e.clientY - top) / height - 0.5;
-        
-        card.style.transform = `
-            perspective(1000px) 
-            rotateY(${x * 10}deg) 
-            rotateX(${y * -10}deg) 
-            translateZ(10px)
-        `;
-    });
-    
-    // Возврат карточки в исходное положение при уходе мыши
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
-    });
-    
-    // Обработчик клика для открытия модального окна
-    card.addEventListener('click', () => {
-        openProjectModal(project);
-    });
-    
-    return card;
-}
 
         // Создание фильтров на основе данных
         function createFilters(data) {
@@ -630,7 +557,6 @@ function createProjectCard(project, index) {
                 } else if (project.industry && typeof project.industry === 'string') {
                     industries.add(project.industry);
                 }
-                // Можно также добавить фильтры по тегам, если нужно
             });
             
             // Добавляем фильтры в DOM
@@ -662,9 +588,6 @@ function createProjectCard(project, index) {
                     }
                 }
             });
-            
-            // Перезапускаем анимацию для видимых проектов
-            animateVisibleCards();
         }
 
         // Открытие модального окна с деталями проекта
@@ -676,20 +599,25 @@ function createProjectCard(project, index) {
             const modalGallery = document.getElementById('modalGallery');
             
             // Заполняем данными из проекта
-            modalImage.src = project.url || (project.images && project.images.length > 0 ? project.images[0] : '');
+            modalImage.src = project.images && project.images.length > 0 ? project.images[0] : '';
             modalTitle.textContent = project.title || 'Без названия';
-            modalDescription.textContent = project.description || '';
+            
+            let description = '';
+            if (project.meta_description) {
+                description = project.meta_description;
+            } else if (project.description) {
+                description = project.description;
+            } else if (project.project_info && project.project_info[4]) {
+                description = project.project_info[4];
+            }
+            
+            modalDescription.textContent = description || '';
             
             // Очищаем и заполняем галерею
             modalGallery.innerHTML = '';
             
             if (project.images && project.images.length > 1) {
-                // Ограничиваем количество изображений для галереи (до 6)
-                const galleryImages = project.images.slice(0, 6);
-                
-                galleryImages.forEach((imgUrl, i) => {
-                    if (i === 0) return; // Первое изображение уже отображается как главное
-                    
+                project.images.slice(1, 7).forEach((imgUrl, i) => {
                     const thumbnail = document.createElement('div');
                     thumbnail.className = 'gallery-thumbnail';
                     
@@ -706,14 +634,11 @@ function createProjectCard(project, index) {
                     modalGallery.appendChild(thumbnail);
                 });
             } else {
-                // Если нет дополнительных изображений, скрываем галерею
                 modalGallery.style.display = 'none';
             }
             
             // Показываем модальное окно
             modal.classList.add('active');
-            
-            // Блокируем прокрутку
             document.body.style.overflow = 'hidden';
         }
 
@@ -721,8 +646,6 @@ function createProjectCard(project, index) {
         function closeProjectModal() {
             const modal = document.getElementById('projectModal');
             modal.classList.remove('active');
-            
-            // Разблокируем прокрутку
             document.body.style.overflow = '';
         }
 
@@ -742,50 +665,15 @@ function createProjectCard(project, index) {
             
             const portfolioGrid = document.getElementById('portfolioGrid');
             portfolioGrid.innerHTML = `
-                <div class="empty-state">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <div style="text-align:center; padding:40px 20px; color:var(--tg-theme-hint-color);">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="12" cy="16" r="1" fill="currentColor"/>
                     </svg>
-                    <p>${message}</p>
+                    <p style="margin-top:16px; font-size:16px;">${message}</p>
                 </div>
             `;
-        }
-
-        // Показать пустое состояние
-        function showEmptyState() {
-            const portfolioGrid = document.getElementById('portfolioGrid');
-            portfolioGrid.innerHTML = `
-                <div class="empty-state">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <p>Нет доступных проектов</p>
-                </div>
-            `;
-        }
-
-        // Аниматировать видимые карточки
-        function animateVisibleCards() {
-            const cards = document.querySelectorAll('.portfolio-item');
-            
-            cards.forEach((card, index) => {
-                if (card.style.display !== 'none') {
-                    // Сначала удаляем класс для сброса анимации
-                    card.classList.remove('visible');
-                    
-                    // Форсируем перерисовку
-                    void card.offsetWidth;
-                    
-                    // Добавляем с задержкой
-                    setTimeout(() => {
-                        card.classList.add('visible');
-                    }, 50 * index);
-                }
-            });
         }
 
         // Настройка обработчиков событий
@@ -813,18 +701,6 @@ function createProjectCard(project, index) {
                 if (e.target === document.getElementById('projectModal')) {
                     closeProjectModal();
                 }
-            });
-            
-            // Обработчик кнопки связи
-            document.getElementById('contactBtn').addEventListener('click', () => {
-                // Отправка данных в Telegram бот
-                tg.sendData(JSON.stringify({action: 'contact'}));
-                tg.close();
-            });
-            
-            // Обработчик изменения ориентации экрана для обновления анимаций
-            window.addEventListener('resize', () => {
-                animateVisibleCards();
             });
         }
     </script>
